@@ -21,18 +21,18 @@ const courseSchema = new mongoose.Schema({
   courseDescription: { type: String, required: true },
   courseThumbnail: { type: String },
   coursePrice: { type: Number, required: true },
-  isPublished: { type: Boolean, required: true },
+  isPublished: { type: Boolean, required: true, default: false }, // ✅ default avoids missing field errors
   discount: { type: Number, required: true, min: 0, max: 100 },
   courseContent: [chapterSchema],
   courseRatings: [
     {
-      userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      userId: { type: String, ref: "User" },  // ✅ Clerk userId is a string
       rating: { type: Number, min: 1, max: 5 }
     }
   ],
-  educator: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  educator: { type: String, ref: "User", required: true }, // ✅ Clerk userId is a string
   enrolledStudents: [
-    { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+    { type: String, ref: "User" } // ✅ string not ObjectId
   ],
 }, { timestamps: true, minimize: false });
 
