@@ -8,14 +8,14 @@ import { AppContext } from '../../context/AppContext'
 const StudentsEnrolled = () => {
 
   const {backendUrl, getToken, isEducator} = useContext(AppContext)
-  const [enrolledStudets, setEnrolledStudents] = useState(null)
+  const [enrolledStudents, setEnrolledStudents] = useState(null)
 
   const fetchEnrolledStudents = async () => {
     try {
       const token = await getToken()
       const {data} = await axios.get(backendUrl + '/api/educator/enrolled-students', {headers:{Authorization: `Bearer ${token}`}})
       if(data.success){
-        setEnrolledStudents(data.enrolledStudets.reverse())
+        setEnrolledStudents(data.enrolledStudents.reverse())
       }else{
         toast.error(data.message)
       }
@@ -30,7 +30,7 @@ const StudentsEnrolled = () => {
     }
   }, [isEducator])
 
-  return enrolledStudets ? (
+  return enrolledStudents ? (
     <div className='min-h-screen flex flex-col items-start justify-between md:p-8 md:pb-0 p-4 pt-8 pb-0'>
       <div className='flex flex-col items-center max-w-4xl w-full overflow-hidden rounded-md bg-white border border-gray-500/20'>
         <table className='table-fixed md:table-auto w-full overflow-hidden pb-4'>
@@ -43,7 +43,7 @@ const StudentsEnrolled = () => {
             </tr>
           </thead>
           <tbody>
-            {enrolledStudets.map((item, index) => (
+            {enrolledStudents.map((item, index) => (
               <tr>
                 <td className="px-4 py-3 text-center hidden sm:table-cell">
                   {index + 1}

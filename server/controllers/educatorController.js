@@ -4,24 +4,23 @@ import Course from "../models/Course.js";
 import { cloudinary } from "../configs/cloudinary.js";
 import { Purchase } from "../models/Purchase.js";
 
-// update role to educator
+// Update role to educator
 export const updateRoleToEducator = async (req, res) => {
   try {
     const userId = req.auth.userId;
 
     await clerkClient.users.updateUserMetadata(userId, {
-      publicMetadata: {
-        role: "educator",
-      },
+      publicMetadata: { role: "educator" },
     });
 
     res.json({ success: true, message: "You can publish your course" });
   } catch (error) {
+    console.error(error);
     res.json({ success: false, message: error.message });
   }
 };
 
-// Add new course - function
+// Add new course
 export const addCourse = async (req, res) => {
   try {
     const { courseData } = req.body;
@@ -37,7 +36,7 @@ export const addCourse = async (req, res) => {
 
     const newCourse = await Course.create(parsedCourseData);
 
-    // upload thumbnail to cloudinary
+    // Upload thumbnail to Cloudinary
     const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
       folder: "lms_courses",
     });
@@ -47,6 +46,7 @@ export const addCourse = async (req, res) => {
 
     res.json({ success: true, message: "Course added" });
   } catch (error) {
+    console.error(error);
     res.json({ success: false, message: error.message });
   }
 };
@@ -58,6 +58,7 @@ export const getEducatorCourses = async (req, res) => {
     const courses = await Course.find({ educator });
     res.json({ success: true, courses });
   } catch (error) {
+    console.error(error);
     res.json({ success: false, message: error.message });
   }
 };
@@ -77,7 +78,7 @@ export const educatorDashboardData = async (req, res) => {
     });
 
     const totalEarnings = purchases.reduce(
-      (sum, purchase) => sum + purchase.amount,
+      (sum, purchase) => sum + Number(purchase.amount),
       0
     );
 
@@ -98,13 +99,10 @@ export const educatorDashboardData = async (req, res) => {
 
     res.json({
       success: true,
-      dashboardData: {
-        totalEarnings,
-        enrolledStudentsData,
-        totalCourses,
-      },
+      dashboardData: { totalEarnings, enrolledStudentsData, totalCourses },
     });
   } catch (error) {
+    console.error(error);
     res.json({ success: false, message: error.message });
   }
 };
@@ -131,6 +129,7 @@ export const getEnrolledStudentsData = async (req, res) => {
 
     res.json({ success: true, enrolledStudents });
   } catch (error) {
+    console.error(error);
     res.json({ success: false, message: error.message });
   }
 };
